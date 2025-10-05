@@ -1,6 +1,6 @@
 image:
   # - macOS
-  - 'Visual Studio 2019'
+  - "Visual Studio 2019"
 
 branches:
   only:
@@ -8,13 +8,15 @@ branches:
     - /^v\d.*$/
     - /^deploy-test(-.*)?$/
 
+build: off
+
 configuration:
   - Release
 
 for:
   - matrix:
       only:
-        - image: 'Visual Studio 2019'
+        - image: "Visual Studio 2019"
 
     install:
       - git submodule update --init --recursive
