@@ -1,6 +1,6 @@
-image:
-  # - macOS
-  - "Visual Studio 2019"
+environment:
+  matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
 
 branches:
   only:
@@ -8,47 +8,17 @@ branches:
     - /^v\d.*$/
     - /^deploy-test(-.*)?$/
 
+install:
+  - echo "--- Running Install Script ---"
+  - git submodule update --init --recursive
+
 build_script:
-  - rem "Overriding default MSBuild behavior"
+  - echo "--- Running Build Script ---"
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
+  - C:\msys64\usr\bin\bash -lc "cd \"%APPVEYOR_BUILD_FOLDER%\" && scripts/appveyor-win.sh"
 
-configuration:
-  - Release
-
-for:
-  - matrix:
-      only:
-        - image: "Visual Studio 2019"
-        - configuration: "Release"
-
-    install:
-      - git submodule update --init --recursive
-
-    build_script:
-      - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
-      - C:\msys64\usr\bin\bash -lc "cd \"%APPVEYOR_BUILD_FOLDER%\" && scripts/appveyor-win.sh"
-
-    artifacts:
-      - path: Chiaki
-        name: Chiaki
-      - path: Chiaki-PDB
-        name: Chiaki-PDB
-
-  # - matrix:
-  #     only:
-  #       - image: macOS
-
-  #   install:
-  #     - git submodule update --init --recursive
-  #     - sudo pip3 install protobuf
-  #     - brew install qt@5 opus openssl@1.1 nasm sdl2 protobuf
-  #     - scripts/build-ffmpeg.sh
-
-  #   build_script:
-  #     - export CMAKE_PREFIX_PATH="`pwd`/ffmpeg-prefix;/usr/local/opt/openssl@1.1;/usr/local/opt/qt@5"
-  #     - scripts/build-common.sh
-  #     - cp -a build/gui/chiaki.app Chiaki.app
-  #     - /usr/local/opt/qt@5/bin/macdeployqt Chiaki.app -dmg
-
-  #   artifacts:
-  #     - path: Chiaki.dmg
-  #       name: Chiaki
+artifacts:
+  - path: Chiaki
+    name: Chiaki
+  - path: Chiaki-PDB
+    name: Chiaki-PDB
