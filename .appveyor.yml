@@ -8,7 +8,8 @@ branches:
     - /^v\d.*$/
     - /^deploy-test(-.*)?$/
 
-build: off
+build_script:
+  - rem "Overriding default MSBuild behavior"
 
 configuration:
   - Release
